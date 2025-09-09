@@ -15,9 +15,11 @@ const ICON_MALE:   Texture2D = preload("res://assets/beach_male_hat_64_new.png")
 const ICON_FEMALE: Texture2D = preload("res://assets/beach_female_bikini_64_new.png")
 const PRESET_WIDE_ACTION      := "preset_vendors_wide"      # key 1 → [0.05, 0.95]
 const PRESET_CENTERED_ACTION  := "preset_vendors_centered"  # key 2 → [0.49, 0.51]
+const SPLIT_TOGGLE_ACTION     := "toggle_split_line"        # key X → toggle split line
 
 var _preset1_armed: bool = false
 var _preset2_armed: bool = false
+var _split_line_visible: bool = true  # controls whether the indifference line is drawn
 
 
 @onready var beach: Node2D            = $Beach
@@ -116,13 +118,18 @@ func _update_from_vendor_positions() -> void:
 	var xa: float = (vendor_a as Object).get("x_norm") as float
 	var xb: float = (vendor_b as Object).get("x_norm") as float
 
+	# Respect visibility toggle: clear and exit if hidden
+	if not _split_line_visible:
+		(beach as Object).call("clear_split")
+		return
+
 	# Handle t == 0: if same price, no split; else all go to cheaper
 	if transport_cost <= 0.0:
 		if is_equal_approx(price_a, price_b):
 			(beach as Object).call("clear_split")
 		else:
-			var split_norm: float = 1.0 if price_a < price_b else 0.0
-			(beach as Object).call("set_split_x_from_norm", split_norm)
+			var split_norm0: float = 1.0 if price_a < price_b else 0.0
+			(beach as Object).call("set_split_x_from_norm", split_norm0)
 		return
 
 	# General split formula: x* = (pB - pA + t(a+b)) / (2t)
@@ -456,6 +463,7 @@ func _mark_simulation_pausable() -> void:
 
 var _pause_armed: bool = false
 var _ui_armed: bool = false
+var _split_armed: bool = false
 
 # Remove any toggle code from _process/_unhandled_input and use this:
 func _input(event: InputEvent) -> void:
@@ -489,6 +497,15 @@ func _input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 	elif event.is_action_released(UI_TOGGLE_ACTION):
 		_ui_armed = false
+
+	# Toggle indifference line visibility (X)
+	if event.is_action_pressed(SPLIT_TOGGLE_ACTION) and not _split_armed:
+		_split_armed = true
+		_split_line_visible = not _split_line_visible
+		_update_from_vendor_positions()  # refresh the beach's split rendering only
+		get_viewport().set_input_as_handled()
+	elif event.is_action_released(SPLIT_TOGGLE_ACTION):
+		_split_armed = false
 		
 	if event is InputEventKey:
 		var k := event as InputEventKey
@@ -626,6 +643,12 @@ func _ensure_input_actions() -> void:
 		InputMap.action_add_event(PRESET_CENTERED_ACTION, e2)
 		var e2k := InputEventKey.new(); e2k.physical_keycode = KEY_KP_2
 		InputMap.action_add_event(PRESET_CENTERED_ACTION, e2k)  # keypad 2
+
+	# Toggle split (indifference) line on X
+	if not InputMap.has_action(SPLIT_TOGGLE_ACTION):
+		InputMap.add_action(SPLIT_TOGGLE_ACTION)
+		var ex := InputEventKey.new(); ex.physical_keycode = KEY_X
+		InputMap.action_add_event(SPLIT_TOGGLE_ACTION, ex)
 
 func _on_toggle_ui_pressed() -> void:
 	ui_visible = not ui_visible
