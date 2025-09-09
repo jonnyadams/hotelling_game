@@ -1,4 +1,5 @@
 # scripts/FloatingDollar.gd
+# A brief floating "$" indicator that rises and fades, used on sales.
 class_name FloatingDollar
 extends Node2D
 

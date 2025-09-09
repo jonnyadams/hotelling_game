@@ -1,4 +1,5 @@
 extends Node2D
+# Represents a vendor on the beach. Supports click-drag to change position.
 # class_name Vendor  # (optional)
 
 @export var color: Color = Color.RED
@@ -41,6 +42,7 @@ func _draw() -> void:
 	#         HORIZONTAL_ALIGNMENT_CENTER, 100.0, 14, Color.BLACK)
 
 
+ # Handle click-drag to reposition vendor along the beach
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
 		var mb := event as InputEventMouseButton

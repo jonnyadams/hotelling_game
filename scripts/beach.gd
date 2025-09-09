@@ -1,5 +1,8 @@
 extends Node2D
 
+# Renders the beach and sea background and maintains the split line
+# (the indifferent consumer position) as set by Main.
+
 @export var beach_margin := 0.0  # padding left/right
 @export var beach_y := 360.0      # vertical position
 @export var beach_width := 1120.0 # drawable width (will be recalculated in _ready)
@@ -9,9 +12,6 @@ extends Node2D
 @export var sea_top_color := Color.hex(0x99D9FFFF)   # lighter blue near shore
 @export var sea_bottom_color := Color.hex(0x005577FF) # deeper blue further down
 @export var sea_gradient_steps := 200  # increase for smoother gradient
-
-
-
 
 var split_x_px := -1.0  # where the indifferent consumer is (in pixels), -1 if none
 
@@ -63,7 +63,6 @@ func _draw() -> void:
 	)
 	draw_rect(band_rect, band_color)
 
-	# --- SEA: vertical gradient from shoreline to bottom (manual draw) ---
 	# --- SEA: vertical gradient from shoreline to bottom (manual draw) ---
 	var sea_rect = Rect2(
 		Vector2(left, beach_bottom_y),

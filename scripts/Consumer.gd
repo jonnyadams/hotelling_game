@@ -1,4 +1,5 @@
 # scripts/Consumer.gd
+# A single consumer that walks horizontally toward its chosen vendor.
 class_name Consumer
 extends Node2D
 

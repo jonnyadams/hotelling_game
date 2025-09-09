@@ -1,5 +1,13 @@
 extends Node2D
 
+# Main gameplay controller for the Hotelling beach game.
+#
+# Responsibilities:
+# - Spawn consumers and route them to vendors by delivered-price rule
+# - Track sales and revenue; update UI labels and sliders
+# - Manage camera (zoom/pan) and simple input actions (pause, UI toggle)
+# - Maintain the split point on the beach via the Beach node
+
 const ICON_BLUE:   Texture2D = preload("res://assets/beach_person_blue.png")
 const ICON_RED:    Texture2D = preload("res://assets/beach_person_red.png")
 const ICON_FLOATY: Texture2D = preload("res://assets/beach_person_floaty.png")
@@ -57,6 +65,7 @@ var revenue_b: float = 0.0
 # Optional: if you used the pixel people textures, you may have preloads here
 
 func _ready() -> void:
+	# Prepare UI root to stay responsive even when the game is paused
 	if ui_root: 
 		ui_root.process_mode = Node.PROCESS_MODE_ALWAYS
 		ui_root.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -65,31 +74,22 @@ func _ready() -> void:
 		ui_root.offset_right = 0
 		ui_root.offset_bottom = 0
 
+	# Input setup (pause action) and initial pause state
 	_ensure_pause_input()
 	if start_paused:
 		get_tree().paused = true
 
-	# UI should still be usable while paused
-	if ui_root:
-		ui_root.process_mode = Node.PROCESS_MODE_ALWAYS
-
-	if start_paused:
-		get_tree().paused = true
-
-
-	if start_paused:
-		get_tree().paused = true
+	# Build UI (if missing), apply theme, and compute initial split
 	_ensure_pricing_ui()
 	_ensure_center_price_box()
-	
 	_apply_global_ui_font_size()
 	_update_from_vendor_positions()
 
-	# initial burst
+	# Initial consumer burst
 	for i in range(consumers_initial):
 		_spawn_one_consumer()
 
-	# continuous spawns
+	# Continuous spawning
 	_spawn_timer = Timer.new()
 	_spawn_timer.wait_time = max(0.05, spawn_interval)
 	_spawn_timer.one_shot = false
@@ -97,13 +97,15 @@ func _ready() -> void:
 	_spawn_timer.timeout.connect(_spawn_one_consumer)
 	_spawn_timer.start()
 
+	# Initial UI state and pause-ability of simulation nodes
 	_update_sales_labels()
-	
 	_mark_simulation_pausable()
-	
+
+	# Camera setup
 	_apply_zoom()             # set initial zoom & clamp
 	_clamp_camera_to_world()  # center correctly
-	
+
+	# Input actions and UI visibility
 	_ensure_input_actions()
 	set_ui_visible(ui_visible) 
 
