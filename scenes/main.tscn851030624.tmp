@@ -1,0 +1,24 @@
+[gd_scene load_steps=2 format=3 uid="uid://wa78faxe3s6b"]
+
+[ext_resource type="Script" uid="uid://dumrbai87isol" path="res://scripts/beach.gd" id="1_o5qli"]
+
+[node name="Main" type="Node2D"]
+
+[node name="Beach" type="Node2D" parent="."]
+script = ExtResource("1_o5qli")
+
+[node name="Vendors" type="Node2D" parent="."]
+
+[node name="VendorA" type="Node2D" parent="Vendors"]
+
+[node name="VendorB" type="Node2D" parent="Vendors"]
+
+[node name="Consumers" type="Node2D" parent="."]
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="Control" type="Control" parent="UI"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0

@@ -1,0 +1,59 @@
+[gd_scene load_steps=6 format=3 uid="uid://wa78faxe3s6b"]
+
+[ext_resource type="Script" uid="uid://dumrbai87isol" path="res://scripts/beach.gd" id="1_o5qli"]
+[ext_resource type="Script" uid="uid://b5jma3kwmx4u" path="res://scripts/Main.gd" id="1_sugp2"]
+[ext_resource type="Script" uid="uid://dxyni5rx7we2x" path="res://scripts/Vendor.gd" id="2_0wfyh"]
+[ext_resource type="Texture2D" uid="uid://celgow60m3i13" path="res://assets/vendor_cart_red.png" id="4_tbgi4"]
+[ext_resource type="Texture2D" uid="uid://bsjedutvvk3hq" path="res://assets/vendor_cart_green.png" id="5_tefeu"]
+
+[node name="Main" type="Node2D"]
+script = ExtResource("1_sugp2")
+
+[node name="Beach" type="Node2D" parent="."]
+script = ExtResource("1_o5qli")
+
+[node name="Vendors" type="Node2D" parent="."]
+
+[node name="VendorA" type="Node2D" parent="Vendors"]
+script = ExtResource("2_0wfyh")
+x_norm = 0.05
+icon = ExtResource("4_tbgi4")
+
+[node name="VendorB" type="Node2D" parent="Vendors"]
+script = ExtResource("2_0wfyh")
+color = Color(0.23014, 0.622643, 0.390489, 1)
+label = "B"
+x_norm = 0.95
+icon = ExtResource("5_tefeu")
+
+[node name="Consumers" type="Node2D" parent="."]
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="Control" type="Control" parent="UI"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="SalesBox" type="VBoxContainer" parent="UI/Control"]
+custom_minimum_size = Vector2(280, 70)
+layout_mode = 0
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 56.0
+offset_bottom = 56.0
+theme_override_constants/separation = 8
+
+[node name="SalesALabel" type="Label" parent="UI/Control/SalesBox"]
+layout_mode = 2
+
+[node name="SalesBLabel" type="Label" parent="UI/Control/SalesBox"]
+layout_mode = 2
+
+[node name="TotalLabel" type="Label" parent="UI/Control/SalesBox"]
+layout_mode = 2
+
+[node name="Camera2D" type="Camera2D" parent="."]
